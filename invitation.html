@@ -1218,12 +1218,16 @@ document.getElementById('addToCalendar').addEventListener('click', () => {
   document.body.appendChild(link); link.click(); document.body.removeChild(link);
 });
 
-/* 4. Well-wishes form (client-side only — no backend included)
-   To collect real messages across all visitors, connect this form
-   to a service such as Google Forms, Formspree, or a small
-   serverless function, then replace this handler with a fetch()
-   POST call. For now, submitted wishes are shown locally on this
-   device only, in the "wish wall" below the form. */
+/* 4. Well-wishes form — submits to a Google Sheet
+   Every submission POSTs to the Apps Script web app below, which
+   appends a new row (Timestamp, Name, Message) to your Google Sheet.
+   Apps Script doesn't send back CORS headers, so this uses
+   mode: 'no-cors' — it's a "fire and forget" request: the browser
+   can't read a response back, but the row still lands in the Sheet.
+   The wish also still appears locally in the "wish wall" below the
+   form, purely so the guest sees their own message right away. */
+const WISH_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzSlkvqtMJY7ZtIUJpFApOmHqEWPgXjhv3Eb9sXx91kOeTJJMP3YG868irESBxDlI_YMw/exec';
+
 const wishForm = document.getElementById('wishForm');
 const wishWall = document.getElementById('wishWall');
 const wishNote = document.getElementById('wishNote');
@@ -1233,6 +1237,18 @@ wishForm.addEventListener('submit', (e) => {
   const name = document.getElementById('wishName').value.trim();
   const message = document.getElementById('wishMessage').value.trim();
   if (!name || !message) return;
+
+  // Send to the Google Sheet in the background
+  fetch(WISH_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ name, message })
+  }).catch(() => {
+    // no-cors responses are opaque anyway, so there's nothing useful
+    // to read here — this just guards against a network error
+    // stopping the rest of the form from resetting.
+  });
 
   const card = document.createElement('div');
   card.className = 'wish-card';
