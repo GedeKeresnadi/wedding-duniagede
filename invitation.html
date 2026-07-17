@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Undangan Pawiwahan Gede &amp; Nia</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23D9A441'/%3E%3Cpath d='M32 50 C32 50 10 36 10 22 C10 13 16 7 23 7 C27 7 30 10 32 13 C34 10 37 7 41 7 C48 7 54 13 54 22 C54 36 32 50 32 50 Z' fill='none' stroke='%23FFFBF3' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <meta name="description" content="Undangan Pernikahan Gede & Nia — 19 Agustus 2026, Lalang Linggah, Tabanan, Bali">
 
 <!-- ============================================================
@@ -1205,23 +1206,26 @@ updateCountdown();
 const countdownTimer = setInterval(updateCountdown, 1000);
 
 /* 3. Add to calendar (.ics download) */
-document.getElementById('addToCalendar').addEventListener('click', () => {
-  const icsContent = [
-    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//duniagede//Wedding Invitation//ID',
-    'BEGIN:VEVENT','UID:duniagede-wedding@gedeandnia',
-    'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z',
-    'DTSTART;VALUE=DATE:20260819','DTEND;VALUE=DATE:20260820',
-    'SUMMARY:The Wedding of Gede & Nia',
-    'LOCATION:Lalang Linggah, Selemadeg Barat, Tabanan, Bali',
-    'DESCRIPTION:Join us as we celebrate the wedding of Gede & Nia. #duniagede',
-    'END:VEVENT','END:VCALENDAR'
-  ].join('\r\n');
-  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'Gede-Nia-Wedding.ics';
-  document.body.appendChild(link); link.click(); document.body.removeChild(link);
-});
+const addToCalendarBtn = document.getElementById('addToCalendar');
+if (addToCalendarBtn){
+  addToCalendarBtn.addEventListener('click', () => {
+    const icsContent = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//duniagede//Wedding Invitation//ID',
+      'BEGIN:VEVENT','UID:duniagede-wedding@gedeandnia',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z',
+      'DTSTART;VALUE=DATE:20260819','DTEND;VALUE=DATE:20260820',
+      'SUMMARY:The Wedding of Gede & Nia',
+      'LOCATION:Lalang Linggah, Selemadeg Barat, Tabanan, Bali',
+      'DESCRIPTION:Join us as we celebrate the wedding of Gede & Nia. #duniagede',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Gede-Nia-Wedding.ics';
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  });
+}
 
 /* 4. Well-wishes form — submits to, and loads from, a Google Sheet
    Every submission POSTs to the Apps Script web app below, which
