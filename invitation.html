@@ -353,17 +353,17 @@
   /* resting positions, animated in once the envelope has opened */
   .hero-photo-stack.stack-in .hero-frame-main{
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(-2deg);
+    transform: translateY(0) scale(0.95) rotate(-2deg);
     transition-delay: 0.2s;
   }
   .hero-photo-stack.stack-in .hero-frame-side.left{
     opacity: 0.92;
-    transform: translateY(0) scale(0.92) rotate(-10deg);
+    transform: translateY(0) scale(0.92) rotate(-5deg);
     transition-delay: 0.4s;
   }
   .hero-photo-stack.stack-in .hero-frame-side.right{
     opacity: 0.95;
-    transform: translateY(0) scale(0.94) rotate(10deg);
+    transform: translateY(0) scale(0.94) rotate(5deg);
     transition-delay: 0.55s;
   }
 
@@ -1001,7 +1001,7 @@
     <div class="event-card reveal event-card-center">
       <div class="event-kicker">03 — Resepsi</div>
       <h3 class="event-title">Resepsi</h3>
-      <div class="event-row"><span class="ico">&#128197;</span><div class="val"><strong>Wednesday, 19 August 2026</strong><small>16.00 - 21.00</small></div></div>
+      <div class="event-row"><span class="ico">&#128197;</span><div class="val"><strong>Wednesday, 19 August 2026</strong><small>16.00 - 22.00</small></div></div>
       <div class="event-row"><span class="ico">&#128205;</span><div class="val"><strong>Lalang Linggah</strong><small>Selemadeg Barat, Tabanan, Bali</small></div></div>
     </div>
   </div>
@@ -1133,7 +1133,7 @@ openBtn.addEventListener('click', () => {
   document.body.classList.remove('cover-locked');
 
   musicToggle.classList.add('show');
-  bgMusic.volume = 0.55;
+  bgMusic.volume = 0.70;
   bgMusic.play().then(() => musicToggle.classList.add('playing')).catch(() => {});
 
   // Give the browser a beat to render the now-visible content before scrolling to it
