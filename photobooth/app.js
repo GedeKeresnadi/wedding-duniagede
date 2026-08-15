@@ -370,17 +370,38 @@
   });
 
   // ---------- UPLOAD TO GOOGLE DRIVE VIA APPS SCRIPT ----------
-  async function postToBackend(payload) {
-    const res = await fetch(CONFIG.backendUrl, {
-      method: "POST",
+  // Uses XMLHttpRequest rather than fetch(). Apps Script web app URLs respond
+  // with a redirect (script.google.com -> script.googleusercontent.com), and
+  // some WebKit/Safari versions fail to read the response after fetch()
+  // follows that redirect — even though the server-side execution completed
+  // successfully. XHR handles this redirect reliably across browsers.
+  function postToBackend(payload) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", CONFIG.backendUrl, true);
       // text/plain avoids a CORS preflight against Apps Script
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
+      xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+      xhr.onload = () => {
+        if (xhr.status < 200 || xhr.status >= 300) {
+          reject(new Error("Network response was not ok (" + xhr.status + ")"));
+          return;
+        }
+        let json;
+        try {
+          json = JSON.parse(xhr.responseText);
+        } catch (parseErr) {
+          reject(new Error("Could not parse backend response."));
+          return;
+        }
+        if (!json.success) {
+          reject(new Error(json.error || "Unknown backend error"));
+          return;
+        }
+        resolve(json.data);
+      };
+      xhr.onerror = () => reject(new Error("Network error contacting backend."));
+      xhr.send(JSON.stringify(payload));
     });
-    if (!res.ok) throw new Error("Network response was not ok");
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || "Unknown backend error");
-    return json.data;
   }
 
   async function uploadEverything() {
