@@ -454,7 +454,9 @@
       statusEl.textContent = "Saved with love 💙";
     } catch (err) {
       STATE.uploadOk = false;
-      statusEl.textContent = "";
+      // Temporary: surface the real error on-screen so it can be read directly
+      // off the phone during testing. Safe to remove once uploads are reliable.
+      statusEl.textContent = "Debug: " + (err && err.message ? err.message : String(err));
       $("#uploadFailModal").hidden = false;
     }
   }
