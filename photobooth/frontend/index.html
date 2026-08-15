@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<title>#duNiaGede Photobooth</title>
+<meta name="description" content="Gede & Nia wedding photobooth — capture a little moment from our big day." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ambient ornament, sits behind everything -->
+<div class="ambient" aria-hidden="true"></div>
+
+<main id="app" class="app" data-state="WELCOME">
+
+  <!-- desktop notice -->
+  <div id="desktopNotice" class="desktop-notice" hidden>
+    <p>This little booth works best on your phone 📱</p>
+  </div>
+
+  <!-- ================= WELCOME ================= -->
+  <section class="screen" data-screen="WELCOME">
+    <div class="ornament-frame">
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+      <div class="screen-inner center">
+        <p class="eyebrow">#duNiaGede</p>
+        <h1 class="display-xl">Photobooth</h1>
+        <p class="lede">Capture a little moment from our big day.</p>
+        <button class="btn btn-primary" id="startBtn" type="button">Start Photobooth</button>
+        <p class="hint">Take 2 photos and keep the memory.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NAME ================= -->
+  <section class="screen" data-screen="NAME" hidden>
+    <div class="ornament-frame">
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+      <div class="screen-inner center">
+        <p class="eyebrow">Step 1 of 2</p>
+        <h2 class="display-lg">First, tell us your name</h2>
+        <form id="nameForm" class="name-form" novalidate>
+          <label class="field-label" for="guestName">Your name</label>
+          <input class="field-input" id="guestName" name="guestName" type="text" placeholder="Enter your name" autocomplete="name" maxlength="60" required />
+          <p class="field-error" id="nameError" role="alert" hidden>Please enter your name to continue.</p>
+          <button class="btn btn-primary" type="submit">Continue →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAMERA PERMISSION ERROR ============ -->
+  <section class="screen" data-screen="CAMERA_DENIED" hidden>
+    <div class="ornament-frame">
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+      <div class="screen-inner center">
+        <h2 class="display-lg">We need access to your camera to capture the moment 💙</h2>
+        <p class="lede small">Please allow camera access in your browser settings, then try again. On iPhone: Settings → Safari → Camera. On Android: tap the lock icon in the address bar → Permissions → Camera.</p>
+        <button class="btn btn-primary" id="retryCameraBtn" type="button">Try Again</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CAMERA (photo 1 & 2 share this screen) ================= -->
+  <section class="screen screen--camera" data-screen="CAMERA" hidden>
+    <div class="camera-shell">
+      <div class="camera-top">
+        <p class="camera-step" id="cameraStepLabel">Photo 1 of 2</p>
+        <div class="dots" id="cameraDots" aria-hidden="true">
+          <span class="dot" data-dot="1"></span>
+          <span class="dot" data-dot="2"></span>
+        </div>
+      </div>
+
+      <div class="camera-frame">
+        <video id="cameraVideo" playsinline autoplay muted></video>
+        <div class="shutter-flash" id="shutterFlash" aria-hidden="true"></div>
+        <div class="countdown" id="countdown" aria-live="polite" hidden></div>
+      </div>
+
+      <p class="camera-instruction" id="cameraInstruction">Get ready! 😊</p>
+
+      <button class="shutter-btn" id="shutterBtn" type="button" aria-label="Take photo">
+        <span class="shutter-btn__ring"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= PHOTO PREVIEW (shared for photo 1 & 2) ================= -->
+  <section class="screen" data-screen="PHOTO_PREVIEW" hidden>
+    <div class="preview-shell">
+      <p class="camera-step" id="previewStepLabel">Photo 1 of 2</p>
+      <div class="preview-frame">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="retakeShotBtn" type="button">Retake</button>
+        <button class="btn btn-primary" id="useShotBtn" type="button">Use Photo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GENERATING ================= -->
+  <section class="screen" data-screen="GENERATING" hidden>
+    <div class="screen-inner center">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="lede" id="generatingLabel">Creating your photo strip…</p>
+    </div>
+  </section>
+
+  <!-- ================= FINAL PREVIEW ================= -->
+  <section class="screen" data-screen="FINAL_PREVIEW" hidden>
+    <div class="screen-inner center final-inner">
+      <p class="eyebrow">#duNiaGede</p>
+      <h2 class="display-lg">Your memory is ready ✨</h2>
+      <p class="lede small">A little piece of #duNiaGede, just for you.</p>
+
+      <div class="strip-frame">
+        <canvas id="finalCanvas"></canvas>
+      </div>
+
+      <p class="lede small" id="uploadStatus" aria-live="polite">&nbsp;</p>
+
+      <div class="cta-row">
+        <button class="btn btn-icon" id="retakeAllBtn" type="button">
+          <span aria-hidden="true">↻</span> Retake
+        </button>
+        <button class="btn btn-icon btn-icon--primary" id="downloadBtn" type="button">
+          <span aria-hidden="true">↓</span> Download
+        </button>
+        <button class="btn btn-icon" id="shareBtn" type="button" hidden>
+          <span aria-hidden="true">↗</span> Share
+        </button>
+      </div>
+
+      <p class="lede tiny">I hope this little moment reminds you of our big day.</p>
+      <p class="signoff">Gede &amp; Nia<br />19 August 2026 · Tabanan, Bali</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= RETAKE CONFIRM MODAL ================= -->
+<div class="modal-backdrop" id="retakeModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="retakeModalTitle">
+    <p id="retakeModalTitle" class="modal-title">Retake both photos?</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="cancelRetakeBtn" type="button">Keep This</button>
+      <button class="btn btn-primary" id="confirmRetakeBtn" type="button">Retake</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= UPLOAD FAILURE MODAL ================= -->
+<div class="modal-backdrop" id="uploadFailModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="uploadFailTitle">
+    <p id="uploadFailTitle" class="modal-title">Your photo is ready, but we couldn't save a copy to our wedding album.</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="dismissUploadFailBtn" type="button">Download Photo</button>
+      <button class="btn btn-primary" id="retryUploadBtn" type="button">Try Saving Again</button>
+    </div>
+  </div>
+</div>
+
+<div id="srStatus" class="sr-only" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
