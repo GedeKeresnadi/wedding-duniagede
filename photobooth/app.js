@@ -406,7 +406,7 @@
 
   async function uploadEverything() {
     const statusEl = $("#uploadStatus");
-    if (!CONFIG.backendUrl || CONFIG.backendUrl.includes("PASTE_YOUR")) {
+    if (!CONFIG.backendUrl || CONFIG.backendUrl.includes("https://script.google.com/macros/s/AKfycbw3nbmmS5-wX5Jc1igKGhFWDyW2AFDqp6H0FUeWixrsUeZKzWaUT560gaxsvxZ4eSrS/exec")) {
       statusEl.textContent = "";
       return; // not configured yet — skip silently in dev
     }
