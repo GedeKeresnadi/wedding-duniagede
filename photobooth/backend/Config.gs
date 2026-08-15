@@ -8,7 +8,7 @@ const BACKEND_CONFIG = {
   // The ID of the "DU-NIA-GEDE PHOTOBOOTH" folder in the wedding owner's
   // Google Drive. Find it in the folder's URL:
   // https://drive.google.com/drive/folders/<THIS_PART_IS_THE_ID>
-  driveFolderId: "PASTE_YOUR_DRIVE_FOLDER_ID_HERE",
+  driveFolderId: "1CSLHQQdYnE8y_r_aiu5ngl3Pbu9ySv2T",
 
   // Sub-spreadsheet name created (once) inside the root folder to log sessions.
   sheetName: "Photobooth Sessions",
